@@ -11,9 +11,16 @@ app.get('/', function(req, res){
 //maybe with an alert? and then we take that value 
 //and assign it to a user for that socketgit 
 io.sockets.on('connection', function(socket){
+  
   socket.on('chat message', function(msg){
     io.sockets.emit('chatMessage', msg);
   });
+
+  socket.on('typing', function(msg){ //hmm... this isn't working now
+    //console.log("someone is typing");
+    io.sockets.emit('userTyping', 'user is typing'); //to indicate someone is typing
+  });
+
 });
 
 http.listen(port, function(){
