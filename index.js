@@ -7,9 +7,12 @@ app.get('/', function(req, res){
   res.sendFile(__dirname + '/index.html');
 });
 
-io.on('connection', function(socket){
+//on connection, we need to ask that the connected user pick a user name
+//maybe with an alert? and then we take that value 
+//and assign it to a user for that socketgit 
+io.sockets.on('connection', function(socket){
   socket.on('chat message', function(msg){
-    io.emit('chat message', msg);
+    io.sockets.emit('chatMessage', msg);
   });
 });
 
