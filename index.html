@@ -13,6 +13,7 @@
         #messages { list-style-type: none; margin: 0; padding: 0; }
         #messages li { padding: 5px 10px; }
         #messages li:nth-child(odd) { background: #eee; }
+        .user{position: fixed; bottom: 0; width: 100%; }
       </style>
     <title>Socket.IO Chat</title>
 </head>
@@ -57,7 +58,7 @@
       }
 
       socket.on('userTyping', function(msg){
-        $(".user").append(msg); 
+        //$(".user").append(msg); 
       });
 
     </script>
