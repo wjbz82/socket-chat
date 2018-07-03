@@ -7,6 +7,25 @@
     <title>Login</title>
 </head>
 <body>
-    
+    <form action="" id="login">
+        <input type="text" id="user">
+        <input type="password" id="password">
+        <input type="submit" name="" id="">
+    </form>
+    <script>
+        document.querySelector("#login").addEventListener("submit", function(e){
+            e.preventDefault(); 
+            login(); 
+        });
+
+        function login(){
+            //login here
+            //probably should get the two values
+            var user = document.getElementById("user").value; 
+            var pass = document.getElementById("password").value; 
+
+            
+        }
+    </script>
 </body>
 </html>
