@@ -6,27 +6,60 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font: 13px Helvetica, Arial; }
+        body { font: 13px Helvetica, Arial; background-color: #333}
         form { background: #000; padding: 3px; position: fixed; bottom: 25px; width: 100%; }
         form input { border: 0; padding: 10px; width: 90%; margin-right: .5%; }
         form button { width: 9%; background: rgb(130, 224, 255); border: none; padding: 10px; }
-        #messages { list-style-type: none; margin: 0; padding: 0; }
+        #messages { list-style-type: none; margin: 250px auto; padding: 0; height: 500px; width: 1000px; overflow: auto;}
         #messages li { padding: 5px 10px; }
         #messages li:nth-child(odd) { background: #eee; }
+        #messages li:nth-child(even){ background: slategray; }
         .user{position: fixed; bottom: 0; width: 100%; }
-      </style>
+        #messages::-webkit-scrollbar{width: 1em; }
+        #messages::-webkit-scrollbar-track{-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3); box-shadow: inset 0 0 6px rgba(0,0,0,0.3);}
+        #messages::-webkit-scrollbar-thumb{background-color: darkgrey; outline: 1px solid slategrey;}
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
     <title>Socket.IO Chat</title>
 </head>
-<body>
+<body onload="checkLogin()">
+
+    <nav class="navbar navbar-inverse navbar-static-top" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+        <ul class="nav navbar-nav">
+            <li><a href="dm">Home</a></li>
+            <li><a href="about.php">About</a></li>
+            <li><a href="#portfolio">Portfolio</a></li>
+            <li><a href="#">Blog</a></li>
+            <li><a href="contact.php">Contact</a></li>
+        </ul>
+        </div>
+    </div>
+    </nav>
+
     <ul id="messages"></ul>
-      <form action="">
+
+    <form action="">
         <input id="m" type="text" autocomplete="off"><button>Send</button>
-      </form>
+    </form>
 
-      <div class="user"></div>
-
+    <div class="user"></div>
+    
     <script src="/socket.io/socket.io.js"></script>
     <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script>
 
       var socket = io();
@@ -34,9 +67,14 @@
       $(function () {
         // console.log("is this live"); 
         $('form').submit(function(){
-          socket.emit('chat message', $('#m').val());
-          $('#m').val('');
-          return false;
+            if($('#m').val() == null || $('#m').val() == ""){
+                //alert that the message cannot be null and return 
+                alert('message cannot be null');   //maybe no return
+                return false; 
+            }
+            socket.emit('chat message', $('#m').val());
+            $('#m').val('');
+            return false;
         });
       });
 
@@ -50,16 +88,53 @@
       socket.on('chatMessage', function(msg){
         console.log(msg); 
         $('#messages').append('<li><span>'+msg+'</span></li>');
+        // window.scrollTo(0,  document.getElementById("messages").scrollHeight);
+        var msgDiv = document.getElementById("messages"); 
+        msgDiv.scrollTop = msgDiv.scrollHeight; //testing this
       }); 
 
       function test(e){
         socket.emit('typing', ''); 
         //console.log(e); 
       }
-
+      
       socket.on('userTyping', function(msg){
         //$(".user").append(msg); 
       });
+
+      function checkLogin(){
+          //can i look for a cookie?
+          //check for login cookie = true
+          var loginCookie = getCookie("login"); 
+          if(loginCookie == null){
+              console.log("login cookie is null"); 
+              //maybe i can redirect to a login page
+              window.location = "login"; 
+          }else{
+              console.log("login cookie is not null"); 
+              //get the username cookie and start appending it to the chat messages
+          }
+      }
+        
+      function getCookie(name){
+          var dc = document.cookie; 
+          var prefix = name + "="; 
+          var begin = dc.indexOf("; " + prefix); 
+
+          if(begin == -1){
+              begin = dc.indexOf(prefix); 
+              if(begin != 0){
+                  return null; 
+              }
+          }else{
+              begin += 2; 
+              var end = document.cookie.indexOf(";", begin); 
+              if(end == -1){
+                  end = dc.length; 
+              }
+          }
+          return decodeURI(dc.substring(begin + prefix.length, end)); 
+      }
 
     </script>
 </body>

@@ -11,6 +11,10 @@ app.get('/dm', function(req, res){
     res.sendFile(__dirname + '/dm.html'); 
 });
 
+app.get('/login', function(req, res){
+    res.sendFile(__dirname + '/login.html'); 
+}); 
+
 //on connection, we need to ask that the connected user pick a user name
 //maybe with an alert? and then we take that value 
 //and assign it to a user for that socketgit 
